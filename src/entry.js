@@ -1,10 +1,10 @@
-Vue.component('entry', {
-  props: ['data'],
+Vue.component("entry", {
+  props: ["data"],
   computed: {
-    statusClass: function() {
-      if (this.data.status < 300) return 'status-success'
-      else if (this.data.status < 400) return 'status-redirect'
-      else return 'status-error'
+    statusClass: function () {
+      if (this.data.status < 300) return "status-success";
+      else if (this.data.status < 400) return "status-redirect";
+      else return "status-error";
     },
   },
   template: `
@@ -21,6 +21,7 @@ Vue.component('entry', {
         <span class="protocol">{{ data.url_protocol }}</span><span class="domain">{{ data.url_domain }}</span><span class="path">{{ data.url_path }}</span>
       </div>
       <div class="url" v-else>{{ data.url }}</div>
+      <div class="size">{{ data.size }} bytes</div>
     </div>
   `,
-})
+});
