@@ -32,6 +32,14 @@ new Vue({
       // Checked item count
       return this.entries.filter((e) => e.selected).length;
     },
+    totalSelectedSize: function () {
+      //Total selected items size
+      totalSize = this.entries.reduce(
+        (acc, entry) => acc + entry.size * entry.selected,
+        0
+      );
+      return numberWithCommas(totalSize);
+    },
   },
   methods: {
     loadFile: function (ev) {
@@ -156,3 +164,7 @@ new Vue({
     }, // /uncheckSearchResults
   },
 });
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+}
