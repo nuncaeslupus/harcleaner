@@ -63,7 +63,7 @@ new Vue({
           size = 0;
           for (i = 0; i < entry.response.headers.length; i++) {
             if (entry.response.headers[i]["name"] == "Content-Length") {
-              size = entry.response.headers[i]["value"];
+              size = parseInt(entry.response.headers[i]["value"]);
               break;
             }
           }
@@ -109,12 +109,39 @@ new Vue({
     }, // /onSearchBy
 
     onSearch: function () {
-      const searchText = this.searchText.trim();
+      let searchText = this.searchText.trim();
+      const regexSize = /\s*size:([<>]=?)?(\d+)\s*/i;
+      const match = searchText.match(regexSize);
+      if (match) {
+        searchText = searchText.replace(match[0], "");
+      }
+
       const regex = new RegExp(searchText, "i");
 
       // Set `searchResult = true` in all entries where search is matched
       this.entries = this.entries.map((entry) => {
-        entry.searchResult = searchText !== "" && entry.url.search(regex) > -1;
+        entry.searchResult =
+          (searchText !== "" || match) && entry.url.search(regex) > -1;
+        if (match) {
+          switch (match[1]) {
+            case "<":
+              entry.searchResult = entry.searchResult && entry.size < match[2];
+              break;
+            case "<=":
+              entry.searchResult = entry.searchResult && entry.size <= match[2];
+              break;
+            case ">":
+              entry.searchResult = entry.searchResult && entry.size > match[2];
+              break;
+            case ">=":
+              entry.searchResult = entry.searchResult && entry.size >= match[2];
+              break;
+            case undefined:
+              entry.searchResult = entry.searchResult && entry.size == match[2];
+              break;
+          }
+        }
+        console.log(entry);
         return entry;
       });
     }, // /onSearch
